@@ -17,7 +17,7 @@ clear; close all; clc;
 ficheiro = 'L04_1v_versao2.mat';   % dataset a identificar
 
 Kp = 36;          % [graus/V] potenciometro
-Ke = 0.221;        % [graus/V] extensometro
+Ke = 4.46;        % [graus/V] extensometro
 Ts = 0.02;        % [s] periodo de amostragem
 
 col_u = 1;        % coluna do comando do motor
@@ -28,7 +28,7 @@ t_descarta = 10;  % [s] transitorio inicial a deitar fora
 af = 0.8;         % polo do filtro passa-baixo
 
 % Ordens do modelo final (muda DEPOIS de veres a tabela)
-na = 2;  nb = 1;  nc = 2;
+na = 1;  nb = 2;  nc = 1;
 nk = 1;           % atraso de 1 amostra
 
 %% 1. CARREGAR OS DADOS
@@ -60,7 +60,7 @@ yf = filter(Bfilt, Afilt, ytrend);
 idx = t >= t(1) + t_descarta;
 tt  = t(idx);
 yf  = yf(idx);
-u   = detrend(u_bruto(idx));
+u   = u_bruto(idx) - mean(u_bruto(idx));
 
 figure('Name', 'Dados processados');
 subplot(2,1,1); plot(tt, u); grid on;
