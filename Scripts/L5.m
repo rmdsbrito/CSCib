@@ -14,7 +14,7 @@
 clear; close all; clc;
 
 %% CONFIGURACAO
-ficheiro = 'L04_1v_versao2.mat';   % dataset a identificar
+ficheiro = 'L04_1v.mat';   % dataset a identificar
 
 Kp = 36;          % [graus/V] potenciometro
 Ke = 4.46;        % [graus/V] extensometro
@@ -90,7 +90,7 @@ fprintf('\n  na  nb  nc | fit [%%]\n');
 fprintf('--------------------\n');
 fprintf(' %3d %3d %3d | %6.1f\n', res');
 fprintf('\nEscolhe a MENOR ordem a partir da qual o fit quase nao melhora.\n');
-save('fits_ordens.mat', 'res');
+save('Datasets/fits_ordens.mat', 'res');
 
 %% 6. MODELO FINAL (com as ordens na, nb, nc definidas em cima)
 th = armax(z, [na nb nc nk], opt);
