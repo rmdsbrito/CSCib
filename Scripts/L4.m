@@ -13,7 +13,7 @@
 clear; close all; clc;
 
 %% CONFIGURACAO
-ficheiros = {'L04_1v.mat'};   % lista de ficheiros a verificar
+ficheiros = {'L04_1v_good_v.mat'};   % lista de ficheiros a verificar
 % ex: {'sq_1V_0p4Hz.mat', 'sq_amp2.mat', 'valid.mat'}
 Ts = 0.02;        % [s] periodo de amostragem esperado
 col_u = 1;        % coluna do comando do motor
