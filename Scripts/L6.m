@@ -16,14 +16,14 @@
 clear; close all; clc;
 
 %% CONFIGURACAO
-ficheiro_modelo = 'modelo_armax.mat';   % saida do L5
+ficheiro_modelo = 'armax_model.mat';   % saida do L5
 ficheiro_valid  = 'L04_0.75v.mat';          % dados so para validacao
 t_descarta = 10;                        % [s] igual ao usado no L5
 col_u = 1;  col_theta = 2;  col_alpha = 3;
 
 %% 1. CARREGAR O MODELO ARMAX DO L5
 M = load(ficheiro_modelo);
-A1 = M.A1;   B1 = M.B1;                 % polinomios em q^-1
+A1 = M.den_armax;   B1 = M.num_armax;                 % polinomios em q^-1
 af = M.af;   Kp = M.Kp;   Ke = M.Ke;   Ts = M.Ts;
 fprintf('Modelo: na=%d nb=%d nc=%d nk=%d\n', M.na, M.nb, M.nc, M.nk);
 fprintf('Polos do ARMAX (devem estar dentro do circulo unitario):\n');
