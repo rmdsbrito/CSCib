@@ -140,10 +140,12 @@ val_file = 'L04_1.25v.mat';
 [tt_val, u_v, yf_v] = loading(val_file, col_u, col_theta, ... 
     col_alpha, Kp, Ke, af, t_dis);  
 
+% Comparison to the u_v passed through the model and filtered
 ys_v = filter(num_armax, den_armax, u_v);
 fprintf('\nFIT DE VALIDACAO: %.1f %%\n', fit(yf_v, ys_v));
 
-figure('Name', 'Validacao');
+% Plotting of the validation data x model
+figure('Name', 'Validation of the model');
 plot(tt_val, yf_v, tt_val, ys_v); grid on; 
 xlabel('Time [s]'); ylabel('differentiated angle [deg]');
 legend('data (validation)', 'model');
