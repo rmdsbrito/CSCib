@@ -22,7 +22,10 @@ col_alpha = 3;
 Ke = 4.57;
 Kp = -36;
 
-%%  ---------------------------------------------------------------------
+% Filter parameter
+af = 0.8;
+
+%%  Verification ---------------------------------------------------------------------
 % Cycle for the graphs
 for k = 1:numel(dataset)
     S = load(dataset{k});
@@ -47,37 +50,14 @@ t_dis = 10; % The first 10s are to be avoided (transitory)
 file = 'L04_1v_good_v.mat';
 
 % Loading Data
-S = load(file);
-X = S.input;
-t = X.time(:);
-sigs = X.signals.values;
-
-utrend = sigs(:, col_u);        
-thetae = sigs(:, col_theta);    
-alphae = sigs(:, col_alpha); 
-
-% Calculation of ytrend
-jumps = [0; diff(thetae)]; % Notices the 10V jumps at (-5V -> 5V)
-thetae = thetae - 10 * cumsum(round(jumps / 10)); % Makes thetae continuous
-ytrend = thetae * Kp + alphae * Ke;
-
-% Filter Parameters
-af = 0.8; % Pole of the lower-pass filter
-Afilt = [1 -af];
-Bfilt = (1 - af) * [1 -1];
-yf = filter(Bfilt, Afilt, ytrend);       
+[tt, u, yf] = loading(file, col_u, col_theta, ... 
+    col_alpha, Kp, Ke, af, t_dis); 
 
 % Choice of the model orders (iterated based on the printed table)
 na = 2; % AR part
 nb = 4; % X part
 nc = 2 ; % MA part
 nk = 1; % pure delay
-
-% Signal Processing
-idx = t >= t(1) + t_dis; % Mask for discarding the first t_dis [s]
-tt = t(idx);
-yf = yf(idx);
-u = utrend(idx) - mean(utrend(idx));
 
 % Figure
 figure('Name', 'Processed Data');
@@ -156,29 +136,15 @@ disp(abs(roots(den)));
 
 %% Validation of the state-space model ------------------------------------
 % Processing of the validation data-set
-vds = 'L04_1.25v.mat';
-V = load(vds);
-VI = V.input;
-t = VI.time(:);
-sigs_val = VI.signals.values;
-u_val = sigs_val(:, col_u);
-thetae_val  = sigs_val(:, col_theta);
-alphae_val  = sigs_val(:, col_alpha);
+val_file = 'L04_1.25v.mat';
+[tt_val, u_v, yf_v] = loading(val_file, col_u, col_theta, ... 
+    col_alpha, Kp, Ke, af, t_dis);  
 
-jumps_val = [0; diff(thetae)];
-thetae = thetae_val - 10 * cumsum(round(jumps_val / 10));   % tira saltos do pot.
-ytrend_val = thetae_val * Kp + alphae * Ke;                  % angulo total [graus]
-
-yf_val = filter(Bfilt, Afilt, ytrend);                   % diferenciar + filtra
-yf_v = yf_val(idx);
-u_v  = u_val(idx) - mean(u_val(idx));
-
-%% 4. VALIDACAO (a): modelo ARMAX vs dados NAO usados na identificacao
 ys_v = filter(num_armax, den_armax, u_v);
 fprintf('\nFIT DE VALIDACAO: %.1f %%\n', fit(yf_v, ys_v));
 
 figure('Name', 'Validacao');
-plot(tt, yf_v, tt, ys_v); grid on;
+plot(tt_val, yf_v, tt_val, ys_v); grid on; 
 xlabel('Time [s]'); ylabel('differentiated angle [deg]');
 legend('data (validation)', 'model');
 title('Validation dataset (not used for identification)');
@@ -199,3 +165,29 @@ bode(sys); grid on;
 figure('Name', 'Polos e zeros');
 pzmap(sys); grid on;
 fprintf('\nZeros do modelo:\n'); disp(tzero(sys));
+
+% function to load the files and process the signals
+function [tt, u, yf] = loading(file, col_u, col_theta, col_alpha, Kp, Ke, af, t_dis)
+    S = load(file);
+    X = S.input;
+    t = X.time(:);
+    sigs = X.signals.values;
+    
+    utrend = sigs(:, col_u);        
+    thetae = sigs(:, col_theta);    
+    alphae = sigs(:, col_alpha); 
+    
+    % Calculation of ytrend
+    jumps = [0; diff(thetae)]; % Notices the 10V jumps at (-5V -> 5V)
+    thetae = thetae - 10 * cumsum(round(jumps / 10)); % Makes thetae continuous
+    ytrend = thetae * Kp + alphae * Ke;
+    
+    Afilt = [1 -af];
+    Bfilt = (1 - af) * [1 -1];
+    yf = filter(Bfilt, Afilt, ytrend); 
+
+    idx = t >= t(1) + t_dis; % Mask for discarding the first t_dis [s]
+    tt = t(idx);
+    yf = yf(idx);
+    u = utrend(idx) - mean(utrend(idx));
+end
