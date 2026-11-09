@@ -20,8 +20,8 @@
 clear; close all; clc;
 
 %% CONFIGURACAO
-ficheiro_ident = 'L04_1v.mat';
-ficheiro_valid = 'L04_0.75v.mat';
+ficheiro_ident = 'L04_1v_good_v.mat'; 'L04_1.25v.mat'; 'PRBS_0.8.mat';
+ficheiro_valid = 'SW_1v_0.4f.mat';
 
 Kp = 36;  Ke = 4.46;  Ts = 0.02;            % constantes e Ts da recolha
 col_u = 1;  col_theta = 2;  col_alpha = 3;
