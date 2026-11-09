@@ -16,9 +16,11 @@ u1 = idinput(NumSamples, 'prbs', Band, Range);
 
 t = (0:NumSamples-1)/Fs;
 
-plot(t, u1)
-xlim([0 20]);
-xlabel('Time [s]')
-ylabel('Amplitude')
-title('PRBS Signal')
-grid on
+% plot(t, u1)
+% xlim([0 20]);
+% xlabel('Time [s]')
+% ylabel('Amplitude')
+% title('PRBS Signal')
+% grid on
+
+u1_simulink = timeseries(u1, t);

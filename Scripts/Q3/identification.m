@@ -12,7 +12,7 @@ clear; close all; clc;
 folder = fileparts(mfilename('fullpath'));
 addpath(fullfile(folder, '..', 'Datasets'));
 % Datasets to verify the model
-dataset = {'L04_1v_good_v.mat', 'L04_1.25v.mat'};  
+dataset = {'L04_1v_good_v.mat', 'L04_1.25v.mat', 'PRBS_0.8.mat'};  
 Ts = 0.02;        
 col_u = 1;        
 col_theta = 2;    
@@ -47,7 +47,7 @@ end
 
 %% Processing of the ARMAX model ------------------------------------------
 t_dis = 10; % The first 10s are to be avoided (transitory)
-file = 'L04_1v_good_v.mat';
+file = 'PRBS_0.8.mat';
 
 % Loading Data
 [tt, u, yf] = loading(file, col_u, col_theta, ... 
@@ -136,7 +136,7 @@ disp(abs(roots(den)));
 
 %% Validation of the state-space model ------------------------------------
 % Processing of the validation data-set
-val_file = 'L04_1.25v.mat';
+val_file = 'L04_1v_good_v.mat';
 [tt_val, u_v, yf_v] = loading(val_file, col_u, col_theta, ... 
     col_alpha, Kp, Ke, af, t_dis);  
 
