@@ -6,6 +6,8 @@
 %
 clear; close all; clc;
 
+Kp = 36;  Ke = 4.46;
+
 %% LQ design on the identified model
 
 % Loading Parameters ------------------------------------------------------
@@ -135,7 +137,7 @@ e_obs = eig((eye(n) - Mk * C) * A);             % error-equation poles of the cu
 fprintf('Observer poles:\n');                    disp(e_obs);
 fprintf('Controller poles (eig(A-BK)):\n');      disp(eig(A - B * K));
 
-%% 3. Observer root-square locus in Rv ---------------------------------------
+% Observer root-square locus in Rv ---------------------------------------
 E = NaN(numel(Rv_locus), n);
 for i = 1:numel(Rv_locus)
     try
